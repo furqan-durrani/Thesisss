@@ -1,0 +1,362 @@
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Excel = Microsoft.Office.Interop.Excel;
+using System.IO;
+using System.Data.SqlClient;
+
+namespace ConsoleApplication2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            if (FileExistorNot())
+            {
+            }
+            Boolean f = FileExistorNot();
+            Console.WriteLine(FileExistorNot());
+            ReadExcel("D:\\Furqan Projects\\One O One\\One - o - One data.xlsx", "xlsx");
+        }
+        private static DataSet ImportExcel(String strFilePath)
+        {
+            String strExcelConn = "Provider=Microsoft.Jet.OLEDB.4.0; Data Source=" + strFilePath + "; Extended Properties='Excel 8.0;IMEX=1;HDR=No'";
+            OleDbConnection connExcel = new OleDbConnection(strExcelConn);
+            OleDbCommand cmdExcel = new OleDbCommand();
+            try
+            {
+                cmdExcel.Connection = connExcel;
+
+                //Check if the Sheet Exists
+                connExcel.Open();
+                DataTable dtExcelSchema;
+                //Get the Schema of the WorkBook
+                dtExcelSchema = connExcel.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+                connExcel.Close();
+
+                //Read Data from Sheet1
+                connExcel.Open();
+                OleDbDataAdapter da = new OleDbDataAdapter();
+                DataSet ds = new DataSet();
+                string SheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                cmdExcel.CommandText = "SELECT * From ["+SheetName+"]";
+                //Range Query
+                //cmdExcel.CommandText = "SELECT * From [" + SheetName + "A3:B5]";
+
+                da.SelectCommand = cmdExcel;
+                da.Fill(ds);
+                connExcel.Close();
+                return ds;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                return null;
+            }
+            finally
+            {
+                cmdExcel.Dispose();
+                connExcel.Dispose();
+            }
+        }
+        public static void ReadExcel(string fileName, string fileExt)
+        {
+            DataSet ds = ImportExcel(fileName);
+            //DataSet ds = ImportExcel2007(Server.MapPath("~/Book1.xlsx"));
+            List<string> lid = new List<string>();
+            List<string> lName = new List<string>();
+            List<string> lCNIC = new List<string>();
+            List<string> lCell = new List<string>();
+            List<string> lAddress = new List<string>();
+            List<string> lLength = new List<string>();
+            List<string> lArms = new List<string>();
+            List<string> lNeck = new List<string>();
+            List<string> lKamar = new List<string>();
+            List<string> lGhairaSize = new List<string>();
+            List<string> lPooncha = new List<string>();
+            List<string> lCoatLength = new List<string>();
+            List<string> lShoulderLength = new List<string>();
+            List<string> lChest = new List<string>();
+            List<string> lBack = new List<string>();
+            List<string> lBelly = new List<string>();
+            List<string> lHip = new List<string>();
+            List<string> lPentLength = new List<string>();
+            List<string> lColorType = new List<string>();
+            List<string> lGhairaStyle = new List<string>();
+            List<string> lFrontPocket = new List<string>();
+            List<string> lSidePocket = new List<string>();
+            List<string> lKaff = new List<string>();
+            List<string> lKaffsize = new List<string>();
+            List<string> lKaffstyle = new List<string>();
+            List<string> lShalwarPocket = new List<string>();
+            List<string> lKanta = new List<string>();
+            List<string> lsuitdesign = new List<string>();
+            List<string> ldate = new List<string>();
+            List<string> lshoulder = new List<string>();
+            List<string> lundershoulder = new List<string>();
+            List<string> lcoatArms = new List<string>();
+            List<string> lCoatshoulder = new List<string>();
+            List<string> lFitting = new List<string>();
+
+            int indid = 0;
+            int indName = 0;
+            int indCNIC = 0;
+            int indCell = 0;
+            int indAddress = 0;
+            int indLength = 0;
+            int indArms = 0;
+            int indNeck = 0;
+            int indKamar = 0;
+            int indGhairaSize = 0;
+            int indPooncha = 0;
+            int indCoatLength = 0;
+            int indShoulderLength = 0;
+            int indChest = 0;
+            int indBack = 0;
+            int indBelly = 0;
+            int indHip = 0;
+            int indPentLength = 0;
+            int indColorType = 0;
+            int indGhairaStyle = 0;
+            int indFrontPocket = 0;
+            int indSidePocket = 0;
+            int indKaff = 0;
+            int indKaffsize = 0;
+            int indKaffstyle = 0;
+            int indShalwarPocket = 0;
+            int indKanta = 0;
+            int indsuitdesign = 0;
+            int inddate = 0;
+            int indshoulder = 0;
+            int indundershoulder = 0;
+            int indcoatArms = 0;
+            int indCoatshoulder = 0;
+            int indFitting = 0;
+
+
+            for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
+            {
+                if (ds.Tables[0].Rows[0][i].ToString() == "id")
+                {
+                    indid = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Name")
+                {
+                    indName = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "CNIC")
+                {
+                    indCNIC = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Cell")
+                {
+                    indCell = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Address")
+                {
+                    indAddress = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Length")
+                {
+                    indLength = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Arms")
+                {
+                    indArms = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Neck")
+                {
+                    indNeck = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Kamar")
+                {
+                    indKamar = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "GhairaSize")
+                {
+                    indGhairaSize = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Pooncha")
+                {
+                    indPooncha = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "CoatLength")
+                {
+                    indCoatLength = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "ShoulderLength")
+                {
+                    indShoulderLength = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Chest")
+                {
+                    indChest = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Back")
+                {
+                    indBack = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Belly")
+                {
+                    indBelly = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Hip")
+                {
+                    indHip = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "PentLength")
+                {
+                    indPentLength = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "ColorType")
+                {
+                    indColorType = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "GhairaStyle")
+                {
+                    indGhairaStyle = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "FrontPocket")
+                {
+                    indFrontPocket = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "SidePocket")
+                {
+                    indSidePocket = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Kaff")
+                {
+                    indKaff = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Kaffsize")
+                {
+                    indKaffsize = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Kaffstyle")
+                {
+                    indKaffstyle = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "ShalwarPocket")
+                {
+                    indShalwarPocket = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Kanta")
+                {
+                    indKanta = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "suitdesign")
+                {
+                    indsuitdesign = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "date")
+                {
+                    inddate = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "shoulder")
+                {
+                    indshoulder = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "undershoulder")
+                {
+                    indundershoulder = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "coatArms")
+                {
+                    indcoatArms = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Coatshoulder")
+                {
+                    indCoatshoulder = i;
+                }
+                else if (ds.Tables[0].Rows[0][i].ToString() == "Fitting")
+                {
+                    indFitting = i;
+                }
+            }
+
+            for (int i = 1; i < ds.Tables[0].Rows.Count; i++)
+            {
+                lid.Add(ds.Tables[0].Rows[i][indid].ToString());
+                lName.Add(ds.Tables[0].Rows[i][indName].ToString());
+                lCNIC.Add(ds.Tables[0].Rows[i][indCNIC].ToString());
+                lCell.Add(ds.Tables[0].Rows[i][indCell].ToString());
+                lAddress.Add(ds.Tables[0].Rows[i][indAddress].ToString());
+                lLength.Add(ds.Tables[0].Rows[i][indLength].ToString());
+                lArms.Add(ds.Tables[0].Rows[i][indArms].ToString());
+                lNeck.Add(ds.Tables[0].Rows[i][indNeck].ToString());
+                lKamar.Add(ds.Tables[0].Rows[i][indKamar].ToString());
+                lGhairaSize.Add(ds.Tables[0].Rows[i][indGhairaSize].ToString());
+                lPooncha.Add(ds.Tables[0].Rows[i][indPooncha].ToString());
+                lCoatLength.Add(ds.Tables[0].Rows[i][indCoatLength].ToString());
+                lShoulderLength.Add(ds.Tables[0].Rows[i][indShoulderLength].ToString());
+                lChest.Add(ds.Tables[0].Rows[i][indChest].ToString());
+                lBack.Add(ds.Tables[0].Rows[i][indBack].ToString());
+                lBelly.Add(ds.Tables[0].Rows[i][indBelly].ToString());
+                lHip.Add(ds.Tables[0].Rows[i][indHip].ToString());
+                lPentLength.Add(ds.Tables[0].Rows[i][indPentLength].ToString());
+                lColorType.Add(ds.Tables[0].Rows[i][indColorType].ToString());
+                lGhairaStyle.Add(ds.Tables[0].Rows[i][indGhairaStyle].ToString());
+                lFrontPocket.Add(ds.Tables[0].Rows[i][indFrontPocket].ToString());
+                lSidePocket.Add(ds.Tables[0].Rows[i][indSidePocket].ToString());
+                lKaff.Add(ds.Tables[0].Rows[i][indKaff].ToString());
+                lKaffsize.Add(ds.Tables[0].Rows[i][indKaffsize].ToString());
+                lKaffstyle.Add(ds.Tables[0].Rows[i][indKaffstyle].ToString());
+                lShalwarPocket.Add(ds.Tables[0].Rows[i][indShalwarPocket].ToString());
+                lKanta.Add(ds.Tables[0].Rows[i][indKanta].ToString());
+                lsuitdesign.Add(ds.Tables[0].Rows[i][indsuitdesign].ToString());
+                ldate.Add(ds.Tables[0].Rows[i][inddate].ToString());
+                lshoulder.Add(ds.Tables[0].Rows[i][indshoulder].ToString());
+                lundershoulder.Add(ds.Tables[0].Rows[i][indundershoulder].ToString());
+                lcoatArms.Add(ds.Tables[0].Rows[i][indcoatArms].ToString());
+                lCoatshoulder.Add(ds.Tables[0].Rows[i][indCoatshoulder].ToString());
+                lFitting.Add(ds.Tables[0].Rows[i][indFitting].ToString());
+            }
+            Console.WriteLine(lid.Count);
+            for (int ii = 0; ii < lid.Count; ii++)
+            { // Loop through List with for
+                //Console.WriteLine(i+"   " + lName[i]);
+                try {
+                    //log.info("Customer " + txtMobile.Text + " record has been deleted successfully, and now going to add new record");
+                    //log.info(txtId.Text + ":" + txtPrice.Text + ":" + txtTotalStock.Text + ":" + txtUnitPrice.Text + ":" + cmbMeasuringUnit.SelectedItem + ":" + cmbProdDescription.SelectedItem + ":" + cmbProductType.SelectedItem);
+                    //SqlConnection con = new SqlConnection("Data Source=NiluNilesh;Integrated Security=True");  
+                    //string mobilenoo = txtMobile.Text.Trim();
+                    SqlConnection con = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\db\One-O-One.mdf;Integrated Security=True;Connect Timeout=30");
+                    
+                    String query = "INSERT INTO Measurement (OrderId,Length,Arms,Shoulder,Neck,Kamar,GhairaStyle,UnderShoulderr,ShalwarLength,Poocha,CoatLength,CoatArms,Kanta,KaffStyle,CoatShoulder,Chest,Back,Balley,Hip,PentLength,SelectType,Ghaira,FrontPocket,SidePocket,ShalwarPocket,Kaff,KaffSize,OtherDetails,CompleteFlag,Name,MobileNo, ShalwarJali, Design, CustomerNo) values" +
+                                    "('','" + lLength[ii] + "','" + lArms[ii] + "','" + lshoulder[ii] + "','" + lNeck[ii] + "','" + lKamar[ii] + "','" + lGhairaStyle[ii] + "','" + lundershoulder[i] + "','" + lShoulderLength[ii] + "','" + lPooncha[ii] + "','" + lCoatLength[ii] + "','" + lcoatArms[ii] + "','" + lKanta[ii] + "','" + lKaffstyle[ii] + "','" + lCoatshoulder[ii] + "','" + lChest[ii] + "','" + lBack[ii] + "','" + lBelly[ii] + "','" + lHip[ii] + "','" + lPentLength[ii] + "','" + lColorType[ii] + "','" + lGhairaSize[ii] + "','" + lFrontPocket[ii] + "','" + lSidePocket[ii] + "','" + lShalwarPocket[ii] + "','" + lKaff[ii] + "','" + lKaffsize[ii] + "','','','" + lName[ii] + "','" + lCell[ii] + "', '', '" + lsuitdesign[ii] + "','" + lid[ii] + "')";
+                    SqlCommand cmd = new SqlCommand(query, con);
+                    //log.info(query);
+                    con.Open();
+                    //con.Open();
+                    int i = cmd.ExecuteNonQuery();
+                    con.Close();
+                    if (i != 0)
+                    {
+                        //MessageBox.Show("Successfuly Saved");
+                        //log.info("Record save ---  " + query);
+                        //MessageBox1 msg1 = new MessageBox1(txtMobile.Text + "|Mr. " + txtName.Text + ", Your order " + txtOrderId.Text + " is created. Please receive within 15days. Thank you.", Convert.ToInt32(txtOrderId.Text), 0);
+                        //updateMeasurementOrderId();
+                        //PrintSlip();
+                        //ClearForm();
+                        //GetCustomerId();
+                    }
+                }
+                catch (Exception ex) { }
+            }
+            Console.ReadLine();
+
+        }
+        public static bool FileExistorNot()
+        {
+            string path = "D:\\Furqan Projects\\One O One\\Sample Excel File.xlsx";  
+              if (!File.Exists(path)) {     
+                return false;  
+               }  
+            return true;
+        }
+    }
+}
